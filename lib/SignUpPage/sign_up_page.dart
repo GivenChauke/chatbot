@@ -3,6 +3,9 @@ import 'package:chatbot/components/my_button.dart';
 import 'package:chatbot/components/square_tile.dart';
 import 'package:chatbot/LoginPage/login_page.dart';
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:chatbot/services/auth/auth.dart';
+import 'package:chatbot/Homepage/Homepage.dart';
 
 class SignUpPage extends StatefulWidget {
   const SignUpPage({super.key});
@@ -15,15 +18,45 @@ class _SignUpPageState extends State<SignUpPage> {
   final TextEditingController EmailController = TextEditingController();
   final TextEditingController PasswordController = TextEditingController();
   final TextEditingController NameController = TextEditingController();
-  final TextEditingController confirmPassController = TextEditingController();
+  AuthService auth = AuthService();
 
-  void SignUserIn(){
-    final String username = EmailController.text;
+  void SignUserUp() async{
+    final String name = NameController.text;
+    final String email = EmailController.text;
     final String password = PasswordController.text;
-    print("Username: $username");
-    print("Password: $password");
+    try {
+      User? user = await auth.signUp(email, password, name);
+      if (user != null) {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => const MyHomePage()),
+        );
+      }
+    } catch (e) {
+      _showErrorDialog(context, e.toString());
+    }
   }
 
+  // Method to show error dialog
+  void _showErrorDialog(BuildContext context, String error) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text("Error"),
+          content: Text(error),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text("OK"),
+            ),
+          ],
+        );
+      },
+    );
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -68,7 +101,7 @@ class _SignUpPageState extends State<SignUpPage> {
               const SizedBox(height: 10),
               //login button
               MyButton(
-                onTap: SignUserIn,
+                onTap: () => SignUserUp(),
                 text: 'Sign Up',
               ),
               const SizedBox(height: 10),

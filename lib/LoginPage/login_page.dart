@@ -3,6 +3,9 @@ import 'package:chatbot/components/my_button.dart';
 import 'package:chatbot/components/square_tile.dart';
 import 'package:chatbot/SignUpPage/sign_up_page.dart';
 import 'package:flutter/material.dart';
+import 'package:chatbot/services/auth/auth.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:chatbot/HomePage/Homepage.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage ({super.key});
@@ -14,11 +17,47 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   final TextEditingController EmailController = TextEditingController();
   final TextEditingController PasswordController = TextEditingController();
-  void SignUserIn(){
+  AuthService auth = AuthService();
+
+   void SignUserIn(BuildContext context) async {
     final String username = EmailController.text;
     final String password = PasswordController.text;
-    print("Username: $username");
-    print("Password: $password");
+
+    try {
+      User? user = await auth.signIn(username, password);
+
+      // If sign-in is successful, navigate to the HomePage
+      if (user != null) {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => const MyHomePage()),
+        );
+      }
+    } catch (e) {
+      // Show an error dialog if sign-in fails
+      _showErrorDialog(context, e.toString());
+    }
+  }
+
+  // Method to show error dialog
+  void _showErrorDialog(BuildContext context, String error) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text("Error"),
+          content: Text(error),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text("OK"),
+            ),
+          ],
+        );
+      },
+    );
   }
 
   @override
@@ -66,7 +105,7 @@ class _LoginPageState extends State<LoginPage> {
               const SizedBox(height: 10),
               //login button
               MyButton(
-                onTap: SignUserIn,
+                onTap: () => SignUserIn(context),
                 text: 'Login',
               ),
               const SizedBox(height: 10),
