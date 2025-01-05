@@ -1,19 +1,22 @@
 import 'package:chatbot/components/my_text_field.dart';
 import 'package:chatbot/components/my_button.dart';
 import 'package:chatbot/components/square_tile.dart';
-import 'package:chatbot/SignUpPage/sign_up_page.dart';
+import 'package:chatbot/LoginPage/login_page.dart';
 import 'package:flutter/material.dart';
 
-class LoginPage extends StatefulWidget {
-  const LoginPage ({super.key});
+class SignUpPage extends StatefulWidget {
+  const SignUpPage({super.key});
 
   @override
-  State<LoginPage> createState() => _LoginPageState();
+  State<SignUpPage> createState() => _SignUpPageState();
 }
 
-class _LoginPageState extends State<LoginPage> {
+class _SignUpPageState extends State<SignUpPage> {
   final TextEditingController EmailController = TextEditingController();
   final TextEditingController PasswordController = TextEditingController();
+  final TextEditingController NameController = TextEditingController();
+  final TextEditingController confirmPassController = TextEditingController();
+
   void SignUserIn(){
     final String username = EmailController.text;
     final String password = PasswordController.text;
@@ -35,14 +38,20 @@ class _LoginPageState extends State<LoginPage> {
               Image.asset('assets/images/PngItem_5002858.png',height: 100,),
               const SizedBox(height: 50),
               //text to welcome user
-              const Text("Welcome back to Agri-chatbot",
+              const Text("Welcome to Agri-chatbot",
               style: TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.bold,
-              ),
-              
+                ),
               ),
               const SizedBox(height: 30),
+              //name
+              MyTextField(
+                hintText: 'Name', 
+                obscureText: false, 
+                controller: NameController
+                ),
+              const SizedBox(height: 10),
               //email
               MyTextField(
                 hintText: 'Email', 
@@ -57,17 +66,10 @@ class _LoginPageState extends State<LoginPage> {
                 controller: PasswordController
                 ),
               const SizedBox(height: 10),
-              //forgot password
-              Text("Forgot Password?",
-              style: TextStyle(
-                color: Colors.grey[600],
-              ),
-              ),
-              const SizedBox(height: 10),
               //login button
               MyButton(
                 onTap: SignUserIn,
-                text: 'Login',
+                text: 'Sign Up',
               ),
               const SizedBox(height: 10),
               //or continue with
@@ -100,10 +102,10 @@ class _LoginPageState extends State<LoginPage> {
               ),
               const SizedBox(height: 10),
               //sign up text
-              Row(
+                Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Text("Don't have an account?",
+                  Text("Already have an account?",
                   style: TextStyle(
                     color: Colors.grey[600],
                   ),
@@ -112,9 +114,9 @@ class _LoginPageState extends State<LoginPage> {
                   TextButton(
                     onPressed: (){
                       Navigator.push(context, 
-                      MaterialPageRoute(builder: (context) => const SignUpPage()));
+                      MaterialPageRoute(builder: (context) => const LoginPage()));
                     },
-                    child: const Text('Sign Up now',
+                    child: const Text('Sign in now',
                     style: TextStyle(
                       color: Colors.blue,
                       fontWeight: FontWeight.bold

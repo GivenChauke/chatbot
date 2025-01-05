@@ -18,15 +18,45 @@ class MyTextField extends StatelessWidget {
       controller: controller,
       obscureText: obscureText,
       decoration: InputDecoration(
-        hintText: hintText,
-        hintStyle: const TextStyle(
-          color: Colors.grey,
+        labelText: hintText,
+        labelStyle: TextStyle(
+          color: Colors.green[600], // Label color
         ),
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(20),
-        ),
+        floatingLabelBehavior: FloatingLabelBehavior.auto,
         fillColor: Colors.grey[100],
         filled: true,
+        // Border for normal (enabled) state
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(20),
+          borderSide: BorderSide(
+            color: Colors.green[600] ?? Colors.green, // Default green color
+            width: 1.5,
+          ),
+        ),
+        // Border for focused state
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(20),
+          borderSide: BorderSide(
+            color: Colors.green[800] ?? Colors.green, // Darker green on focus
+            width: 2.0,
+          ),
+        ),
+        // Border for error state
+        errorBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(20),
+          borderSide: const BorderSide(
+            color: Colors.red, // Red color for errors
+            width: 1.5,
+          ),
+        ),
+        // Border when there's an error and the field is focused
+        focusedErrorBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(20),
+          borderSide: const BorderSide(
+            color: Colors.redAccent, // Red accent on focus during error
+            width: 2.0,
+          ),
+        ),
       ),
     );
   }
