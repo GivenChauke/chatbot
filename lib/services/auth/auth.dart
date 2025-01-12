@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 
 class AuthService {
   // Singleton instance
@@ -10,6 +11,9 @@ class AuthService {
   }
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseFirestore _db = FirebaseFirestore.instance;
+  final GoogleSignIn _googleSignIn = GoogleSignIn(
+    clientId: '263076304352-rlvl9edaaq4vku5rv0l91qfqehijt8di.apps.googleusercontent.com', // Replace with your actual client ID
+  );
   Future<User?> signIn(String email, String password) async {
     try {
       UserCredential result = await _auth.signInWithEmailAndPassword(email: email, password: password);
@@ -81,72 +85,45 @@ class AuthService {
     }
   }
 
-  // Future<User?> signInWithGoogle() async {
-  //   try {
-  //     // Trigger the Google authentication flow
-  //     final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
-  //     if (googleUser == null) {
-  //       // User canceled the sign-in
-  //       return null;
-  //     }
+  Future<User?> signInWithGoogle() async {
+    try {
+      // Trigger the Google authentication flow
+      final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
+      if (googleUser == null) {
+        // User canceled the sign-in
+        return null;
+      }
 
-  //     // Obtain the auth details from the request
-  //     final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
+      // Obtain the auth details from the request
+      final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
 
-  //     // Create a new credential
-  //     final AuthCredential credential = GoogleAuthProvider.credential(
-  //       accessToken: googleAuth.accessToken,
-  //       idToken: googleAuth.idToken,
-  //     );
+      // Create a new credential
+      final AuthCredential credential = GoogleAuthProvider.credential(
+        accessToken: googleAuth.accessToken,
+        idToken: googleAuth.idToken,
+      );
 
-  //     // Sign in to Firebase with the Google credential
-  //     UserCredential result = await _auth.signInWithCredential(credential);
-  //     User? user = result.user;
+      // Sign in to Firebase with the Google credential
+      UserCredential result = await _auth.signInWithCredential(credential);
+      User? user = result.user;
 
-  //     if (user != null) {
-  //       // Check if the user is new and create a Firestore document if so
-  //       DocumentSnapshot userDoc = await _db.collection('users').doc(user.uid).get();
-  //       if (!userDoc.exists) {
-  //         String name = user.displayName!.split(' ')[0];
-  //         String surname = user.displayName!.split(' ')[1];
-  //         // If the user does not exist in Firestore, create a new user document
-  //         await _db.collection('users').doc(user.uid).set({
-  //           'name': name,
-  //           'surname': surname,
-  //           'email': user.email,
-  //           'profileVisibility': false,
-  //           'bio': '',
-  //           'birthDate': DateTime.now(),
-  //           'location': '',
-  //           'userType': 'pet_owner',
-  //           'profilePictureUrl': '',
-  //           'sidebarImage': '',
-  //           'phoneDetails': {
-  //             'phoneNumber': '',
-  //             'isoCode': '',
-  //             'dialCode': '',
-  //           },
-  //           'preferences': {
-  //             'Colours': {
-  //               'BackgroundColour': 4278190080,
-  //               'CardColour': 4279505940,
-  //               'NavbarTextColour': 4294967295,
-  //               'PrimaryColour': 4283302026,
-  //               'SecondaryColour': 4279522048,
-  //               'TextColour': 4294967295,
-  //             },
-  //             'themeMode': 'light',
-  //             'usingDefaultImage': true,
-  //             'usingImage': false
-  //           },
-  //         });
-  //       }
-  //     }
+      if (user != null) {
+        // Check if the user is new and create a Firestore document if so
+        DocumentSnapshot userDoc = await _db.collection('users').doc(user.uid).get();
+        if (!userDoc.exists) {
+          String name = user.displayName!.split(' ')[0];
+          // If the user does not exist in Firestore, create a new user document
+          await _db.collection('users').doc(user.uid).set({
+            'name': name,
+            'email': user.email,
+          });
+        }
+      }
 
-  //     return user;
-  //   } catch (e) {
-  //     print(e.toString());
-  //     return null;
-  //   }
-  // }
+      return user;
+    } catch (e) {
+      print(e.toString());
+      return null;
+    }
+  }
 }

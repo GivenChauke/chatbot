@@ -50,7 +50,27 @@ class _SignUpPageState extends State<SignUpPage> {
     });
   }
   }
-
+  void signInwithGoogle(context) async {
+    setState(() {
+      _isLoading = true;
+    });
+    try {
+      await Future.delayed(const Duration(seconds: 2));
+      User? user = await auth.signInWithGoogle();
+      if (user != null) {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => const MyHomePage()),
+        );
+      }
+    } catch (e) {
+      _showErrorDialog(context, e.toString());
+    } finally {
+      setState(() {
+        _isLoading = false;
+      });
+    }
+  }
   // Method to show error dialog
    void _showErrorDialog(BuildContext context, String error) {
     showDialog(
@@ -195,10 +215,10 @@ Widget build(BuildContext context) {
                               ),
                               const SizedBox(height: 20),
                               // Sign in with Google
-                              const Row(
+                              Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
-                                  SquareTile(imagePath: 'assets/images/icons8-google-48.png'),
+                                  SquareTile(imagePath: 'assets/images/icons8-google-48.png', onTap: () => signInwithGoogle(context)),
                                 ],
                               ),
                               const SizedBox(height: 10),
