@@ -2,6 +2,7 @@ import 'package:chatbot/components/my_text_field.dart';
 import 'package:chatbot/components/my_button.dart';
 import 'package:chatbot/components/square_tile.dart';
 import 'package:chatbot/SignUpPage/sign_up_page.dart';
+import 'package:chatbot/global_variables.dart';
 import 'package:flutter/material.dart';
 import 'package:chatbot/services/auth/auth.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -41,9 +42,12 @@ class _LoginPageState extends State<LoginPage> {
     User? user = await auth.signIn(username, password);
 
     if (user != null) {
+      //populate user details
+      await auth.fetchUserDetails();
+      isLoggedIn = true;
       Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) => const MyHomePage()),
+        MaterialPageRoute(builder: (context) => const Homepage()),
       );
     }
   } catch (e) {
@@ -62,9 +66,12 @@ class _LoginPageState extends State<LoginPage> {
       await Future.delayed(const Duration(seconds: 2));
       User? user = await auth.signInWithGoogle();
       if (user != null) {
+        //populate user details
+        await auth.fetchUserDetails();
+        isLoggedIn = true;
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => const MyHomePage()),
+          MaterialPageRoute(builder: (context) => const Homepage()),
         );
       }
     } catch (e) {

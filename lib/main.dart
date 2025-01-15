@@ -1,7 +1,9 @@
+import 'package:chatbot/global_variables.dart';
 import 'package:flutter/material.dart';
 import 'Homepage/Homepage.dart';
 import 'LoginPage/login_page.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:chatbot/services/auth/auth.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -26,10 +28,8 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Chatbot',
       debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
-      home: LoginPage(),
+      theme: AppTheme.lightTheme,
+      home: const Homepage(),
     );
   }
 }

@@ -1,3 +1,4 @@
+import 'package:chatbot/global_variables.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -126,4 +127,31 @@ class AuthService {
       return null;
     }
   }
+  //add method to check if user is signed in
+  Future<bool> isloggedIn() async {
+    final User? user = _auth.currentUser;
+    if (user != null)
+    {
+      //fetch user details
+     await fetchUserDetails();
+      return true;
+    }
+    else {
+      return false;
+    }
+  }
+  Future<void> fetchUserDetails() async {
+  final firebaseUser = FirebaseAuth.instance.currentUser;
+
+  if (firebaseUser != null) {
+    currentUserDetails = UserDetails.fromFirebaseUser(firebaseUser);
+    //write query to fetch user name from firestore
+    DocumentSnapshot userDoc = await _db.collection('users').doc(currentUserDetails?.uid).get();
+    currentUserDetails?.displayName = userDoc.get('name');
+    print("User Details Loaded: ${currentUserDetails?.displayName}");
+  } else {
+    currentUserDetails = null;
+    print("No user logged in.");
+  }
+}
 }
