@@ -6,6 +6,7 @@ class AppTheme {
   static const Color primaryGreen = Color(0xFF4CAF50);
   static const Color darkGreen = Color.fromARGB(255, 7, 88, 11);
   static const Color lightGreen = Color.fromARGB(255, 108, 213, 111);
+  static const Color forestGreen = Color.fromARGB(255, 53, 86, 63);
 
   static ThemeData get lightTheme => ThemeData(
         primaryColor: primaryGreen,
@@ -26,6 +27,7 @@ class AppTheme {
         floatingActionButtonTheme: const FloatingActionButtonThemeData(
           backgroundColor: primaryGreen,
         ),
+
       );
 }
 class UserDetails {
