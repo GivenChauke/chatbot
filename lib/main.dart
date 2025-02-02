@@ -7,10 +7,9 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:chatbot/services/auth/auth.dart';
 import 'package:provider/provider.dart';
 import 'package:chatbot/ChatPage/chat_provider.dart';
-
+import 'package:firebase_remote_config/firebase_remote_config.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await dotenv.load(fileName: ".env");
   await Firebase.initializeApp(
    options: const FirebaseOptions (
   apiKey: "AIzaSyCalIFo5teYgqgbXigWiULEo_u8LwXA1BI",
@@ -23,32 +22,29 @@ Future<void> main() async {
   measurementId: "G-WLP7XNHW17"
    ),
   );
-  runApp(
-    MultiProvider(
-      providers: [
-        ChangeNotifierProvider(create: (context) => ChatProvider()),
-      ],
-      child: MyApp(),
-    ),
-  );
+
+    // Fetch Remote Config values
+  final FirebaseRemoteConfig _remoteConfig = FirebaseRemoteConfig.instance;
+  await _remoteConfig.fetchAndActivate();
+  final String _apiKey = _remoteConfig.getString('GEMINI_API_KEY');
+
+  // Run the app only after fetching API key
+  runApp(MyApp(apiKey: _apiKey));
 }
 
 class MyApp extends StatelessWidget {
-   @override
+  final String apiKey;
+  const MyApp({Key? key, required this.apiKey}) : super(key: key);
+
+  @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: FutureBuilder(
-        future: Provider.of<ChatProvider>(context, listen: false).initialize(),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Scaffold(
-              body: Center(child: CircularProgressIndicator()),
-            );
-          } else {
-            return const Homepage(); // Replace with your actual home page widget
-          }
-        },
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (context) => ChatProvider(apiKey)),
+      ],
+      child: const MaterialApp(
+        debugShowCheckedModeBanner: false,
+        home: Homepage(), // Use Homepage directly since API is ready
       ),
     );
   }

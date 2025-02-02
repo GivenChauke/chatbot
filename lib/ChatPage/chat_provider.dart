@@ -4,8 +4,11 @@ import 'package:chatbot/services/gemini/gemini_api.dart';
 import 'package:flutter/material.dart';
 
 class ChatProvider extends ChangeNotifier {
-  final _apiService = GeminiService();
+  final GeminiService _apiService;
+
 bool _isInitialized = false;
+
+    ChatProvider(String apiKey) : _apiService = GeminiService(apiKey);
 
   bool get isInitialized => _isInitialized;
 
