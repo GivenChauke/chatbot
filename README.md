@@ -3,7 +3,10 @@
 A conversational AI chatbot built with **Flutter** and **Firebase**, powered by **Google Gemini API**. The chatbot provides intelligent responses, supports markdown formatting (including italics and bold text), and offers a smooth user experience with real-time messaging.  
 
 ## ✨ Features  
-✅ **AI-Powered Conversations** – Uses Google Gemini API to generate responses  
+✅ **Sign up and Log-in**- Users can create accounts on the platform
+✅ **Guest account**- Users can also opt to not create accounts on the platform
+✅ **AI-Powered Conversations** – Uses Google Gemini API to generate responses 
+✅ **Image carousel**- Clean UI with dynamic image carousel linked to the ai for automated messages 
 ✅ **Markdown Support** – Properly formats text with bold, italics, and code snippets  
 ✅ **User Authentication** – Allows logged-in users to save chat history  
 ✅ **Avatar & UI Enhancements** – Displays user avatars and a side menu for previous chats  
@@ -12,7 +15,11 @@ A conversational AI chatbot built with **Flutter** and **Firebase**, powered by 
 ✅ **Remote Config Integration** – Fetches API keys dynamically  
 
 ## 📸 Screenshots  
-_(Add screenshots here if available)_  
+![alt text](image.png)
+![alt text](image-1.png) 
+![alt text](image-2.png) 
+![alt text](image-3.png)
+![alt text](image-4.png)
 
 ## 🚀 Getting Started  
 
@@ -42,14 +49,5 @@ _(Add screenshots here if available)_
    ```bash
    flutter run
    ```
-
-## 🔥 Firestore Security Rules  
-```firestore
-match /chats/{chatId} {
-    allow read: if true; // Anyone can read messages
-    allow write: if request.auth != null; // Only logged-in users can save chats
-}
-```
-
 ## 📜 License  
 MIT License – Free to use and modify!  
