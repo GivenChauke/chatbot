@@ -1,10 +1,13 @@
 import 'package:chatbot/global_variables.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'Homepage/Homepage.dart';
 import 'LoginPage/login_page.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:chatbot/services/auth/auth.dart';
-
+import 'package:provider/provider.dart';
+import 'package:chatbot/ChatPage/chat_provider.dart';
+import 'package:firebase_remote_config/firebase_remote_config.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
@@ -19,17 +22,30 @@ Future<void> main() async {
   measurementId: "G-WLP7XNHW17"
    ),
   );
-  runApp(MyApp());
+
+    // Fetch Remote Config values
+  final FirebaseRemoteConfig _remoteConfig = FirebaseRemoteConfig.instance;
+  await _remoteConfig.fetchAndActivate();
+  final String _apiKey = _remoteConfig.getString('GEMINI_API_KEY');
+
+  // Run the app only after fetching API key
+  runApp(MyApp(apiKey: _apiKey));
 }
 
 class MyApp extends StatelessWidget {
- @override
+  final String apiKey;
+  const MyApp({Key? key, required this.apiKey}) : super(key: key);
+
+  @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Chatbot',
-      debugShowCheckedModeBanner: false,
-      theme: AppTheme.lightTheme,
-      home: const Homepage(),
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (context) => ChatProvider(apiKey)),
+      ],
+      child: const MaterialApp(
+        debugShowCheckedModeBanner: false,
+        home: Homepage(), // Use Homepage directly since API is ready
+      ),
     );
   }
 }
