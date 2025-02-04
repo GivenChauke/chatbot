@@ -6,18 +6,8 @@ import 'package:flutter/material.dart';
 class ChatProvider extends ChangeNotifier {
   final GeminiService _apiService;
 
-bool _isInitialized = false;
-
     ChatProvider(String apiKey) : _apiService = GeminiService(apiKey);
 
-  bool get isInitialized => _isInitialized;
-
-  Future<void> initialize() async {
-    // Perform any necessary initialization here
-    await Future.delayed(Duration(seconds: 5)); // Simulate initialization delay
-    _isInitialized = true;
-    notifyListeners();
-  }
   //messages and loading
   List<Message> messages = [];
   bool isLoading = false;

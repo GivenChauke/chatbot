@@ -1,3 +1,4 @@
+import 'package:chatbot/components/chat_bubble.dart';
 import 'package:chatbot/services/gemini/gemini_api.dart';
 import 'chat_provider.dart';
 import 'package:flutter/material.dart';
@@ -22,11 +23,6 @@ class _ChatPageState extends State<ChatPage> {
           Expanded(
             child: Consumer<ChatProvider>(
               builder: (context, chatProvider, child) {
-                 if (!chatProvider.isInitialized)  {
-                  return const Center(
-                    child: CircularProgressIndicator(),
-                  );
-                }
                 if (chatProvider.messages.isEmpty) {
                   return const Center(
                     child: Text('Start a conversation!'),
@@ -40,45 +36,54 @@ class _ChatPageState extends State<ChatPage> {
                     //get each message
                     final message = chatProvider.messages[index];
 
-                    //return message
-                    return ListTile(
-                      title: Text(message.content),
-                      subtitle: Text(message.timestamp.toString()),
-                      leading: message.isUser
-                          ? const Icon(Icons.person)
-                          : const Icon(Icons.computer),
-                    );
+                    //return ChatBubble
+                    return ChatBubble(message: message);
                   },
                 );
               },
             ),
           ),
-          //USER INPUT SECTION
-          Row(
+        // USER INPUT SECTION
+        Padding(
+          padding: const EdgeInsets.all(10.0),
+          child: Row(
             children: [
               Expanded(
                 child: TextField(
                   controller: _controller,
-                  decoration: const InputDecoration(
+                  decoration: InputDecoration(
                     hintText: 'Type a message...',
+                    contentPadding: const EdgeInsets.symmetric(horizontal: 15, vertical: 12),
+                    filled: true,
+                    fillColor: Colors.white,
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(25),
+                      borderSide: BorderSide.none,
+                    ),
+                    suffixIcon: IconButton(
+                      icon: const Icon(Icons.clear, color: Colors.grey),
+                      onPressed: () => _controller.clear(),
+                    ),
                   ),
                 ),
               ),
-              IconButton(
+              const SizedBox(width: 8),
+              FloatingActionButton(
                 onPressed: () {
-                  if(_controller.text.isNotEmpty) {
-                  //send message
-                  final chatProvider = Provider.of<ChatProvider>(context, listen: false);
-                  chatProvider.sendMessage(_controller.text);
-                  _controller.clear();
+                  if (_controller.text.isNotEmpty) {
+                    final chatProvider = Provider.of<ChatProvider>(context, listen: false);
+                    chatProvider.sendMessage(_controller.text);
+                    _controller.clear();
                   }
                 },
-                icon: const Icon(Icons.send),
+                backgroundColor: Colors.green.shade600,
+                child: const Icon(Icons.send, color: Colors.white),
               ),
             ],
           ),
+        ),
         ],
-      )
+        ),
     );
   }
 }
