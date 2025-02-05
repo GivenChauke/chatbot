@@ -12,11 +12,19 @@ class Homepage extends StatefulWidget {
 
 class _HomepageState extends State<Homepage> {
   final urlImages=[
-    'assets/images/img9.jpg',
-    'assets/images/img6.jpeg',
-    'assets/images/img7.jpg',
-    'assets/images/img2.jpg',
-    'assets/images/img11.jpg'
+    'assets/images/img9.jpg',//history of agriculture
+    'assets/images/img6.jpeg',//best crops for your area tailored to your location
+    'assets/images/img7.jpg',//future of agriculture and innovation
+    'assets/images/img2.jpg',//curious about your food origins
+    'assets/images/img11.jpg'//need help with your garden, get expert advice
+  ];
+  //create an array for context of the images to be passed to the chatpage
+  final contextAutoPrompts = [
+    'I want to learn about the history of agriculture, keep it short and simple.',
+    'I want to know the best crops for my area, tailored to my location.',
+    'I want to know about the future of agriculture and innovation, keep it short and simple.',
+    'I am curious about my food origins, can you help me with that?',
+    'I need help with my garden, can you provide expert advice?'
   ];
 Widget buildImageWithButton(String urlImage, int index) {
   return Stack(
@@ -53,7 +61,7 @@ Widget buildImageWithButton(String urlImage, int index) {
           onTap: () {
             Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => const ChatPage()),
+              MaterialPageRoute(builder: (context) => ChatPage(promptContext:contextAutoPrompts[index])),
             );
           },
           child: Container(
@@ -131,7 +139,7 @@ Widget build(BuildContext context) {
             onTap: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => const ChatPage()),
+                MaterialPageRoute(builder: (context) => const ChatPage(promptContext: '',)),
               );
             },
             child: Container(
