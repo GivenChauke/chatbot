@@ -23,7 +23,18 @@ class _ChatPageState extends State<ChatPage> {
     return Scaffold(
       body:Column(
         children: [
-        Expanded(
+        // APPBAR SECTION
+      AppBar(
+      title: SizedBox(
+        height: 40.0, // Adjust height as needed
+        child: Image.asset(
+          'assets/images/PngItem_5002858.png',
+          fit: BoxFit.contain,
+          ),
+        ),
+      ),
+        // CHAT SECTION
+        Expanded( 
           child: Consumer<ChatProvider>(
             builder: (context, chatProvider, child) {
               String empty = '';
@@ -83,6 +94,8 @@ class _ChatPageState extends State<ChatPage> {
               Expanded(
                 child: TextField(
                   controller: _controller,
+                  //prevent user from sending message while AI is responding
+                  enabled: !Provider.of<ChatProvider>(context).isLoading,
                   minLines: 1,
                   maxLines: 6,
                   decoration: InputDecoration(
